@@ -27,7 +27,7 @@ function Fisher(event1::BitVector, event2::BitVector; step::Int64 = 0)
     c = count(event1 .& .!event2)
     d = count(.!event1 .& .!event2)
     @info a, b, c, d
-    return FisherExactTest(a, b, c, d)
+    return FisherExactTest(a, b, c, d), step
 end
 
 function findMinDuration(bitvec::BitVector)
@@ -48,6 +48,7 @@ function findMinDuration(bitvec::BitVector)
     return step
 end
 
+# возможно стоит не урезать, а наоборот дополнять нулями
 function groupingBitVec(bitvec::BitVector, step::Int64)
     steps_range = 1:step:length(bitvec)
     new_bitvec = BitVector(undef, length(steps_range))
@@ -58,7 +59,3 @@ function groupingBitVec(bitvec::BitVector, step::Int64)
 
     return new_bitvec
 end
-
-bv1 = BitVector([1, 0, 1, 0, 1])
-bv2 = BitVector([1, 0, 0, 1, 1])
-testres = Fisher(bv1, bv2)

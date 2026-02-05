@@ -52,7 +52,10 @@ function Markup(path::String)
         periods)
 end
 
-mkp = Markup("C:\\Users\\fifteen\\.julia\\dev\\ArrhythmRelations\\src\\data")
-typeof(mkp.periods)
-mkp.periods
-sizeof(mkp.periods.motion_bitvec10)
+# mkp = Markup("C:\\Users\\fifteen\\.julia\\dev\\ArrhythmRelations\\src\\data")
+# typeof(mkp.periods)
+# mkp.periods
+# sizeof(mkp.periods.motion_bitvec10)
+
+mkp = Markup("C:\\Users\\fifteen\\.julia\\dev\\ArrhythmRelations\\test\\xmltest\\Ishem_Arithm.avt")
+mkp.periods.act_periods

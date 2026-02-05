@@ -12,6 +12,7 @@ IBoxAccess = "1607262a-405a-4f9a-89bc-45a61e12db11"
 Random = "9a3f8284-a2c9-5f02-9a11-845980a1fd5c"
 StatsBase = "2913bbd2-ae8a-5f71-8c99-4fb6c76f3a91"
 TimeSamplings = "ed45db17-24e9-469d-8275-17d3d36e28e6"
+XMLDict = "228000da-037f-5747-90a9-8195ccbf91a5"
 wfdb_wrapper_jll = "cfa65b43-6878-5963-b59c-e7edc60d5dc9"
 
 [sources]
@@ -26,6 +27,7 @@ FileUtils = "1.0.12"
 HypothesisTests = "0.11.6"
 Random = "1.11.0"
 StatsBase = "0.34.10"
+XMLDict = "0.4.1"
 julia = "1.10.10"
 
 [extras]
