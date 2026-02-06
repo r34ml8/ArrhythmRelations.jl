@@ -1,5 +1,6 @@
 # from ReportConstructor.jl
 using FileUtils
+using OrderedCollections
 
 export Markup
 
@@ -52,10 +53,40 @@ function Markup(path::String)
         periods)
 end
 
+const SENSATIONS::Vector{NTuple{3, String}} = [
+    ("Sensation/A"    , "anxiety"             , "Тревога"),
+    ("Sensation/P"    , "pain"                , "Боль"),
+    ("Sensation/P.A"  , "pain_anginal"        , "Ангинозная боль"),
+    ("Sensation/P.B"  , "pain_behind_sternum" , "Боль за грудиной"),
+    ("Sensation/P.C"  , "pain_heart_area"     , "Боль в области сердца"),
+    ("Sensation/P.H"  , "headache"            , "Головная боль"),
+    ("Sensation/P.O"  , "other_pain"          , "Другая боль"),
+    ("Sensation/H"    , "arrhythmia"          , "Перебои (Аритмия)"),
+    ("Sensation/F"    , "palpitations"        , "Сердцебиение (Пульсация)"),
+    ("Sensation/T"    , "fatigue"             , "Усталость"),
+    ("Sensation/B"    , "dyspnea"             , "Одышка"),
+    ("Sensation/B.F"  , "rapid_breathing"     , "Учащенное дыхание"),
+    ("Sensation/B.D"  , "labored_breathing"   , "Затрудненное дыхание"),
+    ("Sensation/B.O"  , "other_dyspnea"       , "Другие варианты одышки"),
+    ("Sensation/W"    , "weakness"            , "Слабость"),
+    ("Sensation/W.I"  , "fainting"            , "Обморок"),
+    ("Sensation/W.S"  , "nausea"              , "Дурнота (Тошнота)"),
+    ("Sensation/W.C"  , "dizziness"           , "Головокружение (помрачение сознания)"),
+    ("Sensation/W.O"  , "other_weakness"      , "Другие варианты слабости"),
+    ("Sensation/E"    , "visual_disturbances" , "Нарушения зрения"),
+    ("Sensation/E.D"  , "eye_floaters"        , "«Мушки перед глазами»"),
+    ("Sensation/E.O"  , "other_disturbances"  , "Другие нарушения зрения"),
+    ("Sensation/O"    , "other_complaints"    , "Другие жалобы"),
+]
+SENSE_DECODE = OrderedDict{String, String}(x[1] => x[2] for x in SENSATIONS)
+SENSE_ENCODE = OrderedDict{String, String}(x[2] => x[1] for x in SENSATIONS)
+SENSE_DESCRIBE = OrderedDict{String, String}(x[2] => x[3] for x in SENSATIONS)
+
+
 # mkp = Markup("C:\\Users\\fifteen\\.julia\\dev\\ArrhythmRelations\\src\\data")
 # typeof(mkp.periods)
 # mkp.periods
 # sizeof(mkp.periods.motion_bitvec10)
 
-mkp = Markup("C:\\Users\\fifteen\\.julia\\dev\\ArrhythmRelations\\test\\xmltest\\Ishem_Arithm.avt")
-mkp.periods.act_periods
+# mkp = Markup("C:\\Users\\fifteen\\.julia\\dev\\ArrhythmRelations\\test\\xmltest\\Ishem_Arithm.avt")
+# mkp.periods.act_periods
