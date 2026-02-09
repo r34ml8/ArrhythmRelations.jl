@@ -4,12 +4,14 @@ version = "1.0.0-DEV"
 authors = ["Razheva Elena <razh348@gmail.com> and contributors"]
 
 [deps]
+DSP = "717857b8-e6f2-59f4-9121-6e50c889abd2"
 Descriptors = "b2dd10be-c0b5-41fc-bf7d-fdb86be5b335"
 FileUnv_jll = "c10d0ea1-10c0-5fab-a796-b821f293b8d8"
 FileUtils = "61402b12-eb4b-4f0c-a04f-adfcfe5d14e4"
 HypothesisTests = "09f84164-cd44-5f33-b23f-e6b0d136a0d5"
 IBoxAccess = "1607262a-405a-4f9a-89bc-45a61e12db11"
 OrderedCollections = "bac558e1-5e72-5ebc-8fee-abe8a469f55d"
+Plots = "91a5bcdd-55d7-5caf-9e0b-520d859cae80"
 Random = "9a3f8284-a2c9-5f02-9a11-845980a1fd5c"
 StatsBase = "2913bbd2-ae8a-5f71-8c99-4fb6c76f3a91"
 TimeSamplings = "ed45db17-24e9-469d-8275-17d3d36e28e6"
@@ -24,9 +26,11 @@ TimeSamplings = {url = "https://github.com/IncartStudents/TimeSamplings.jl"}
 wfdb_wrapper_jll = {url = "https://github.com/sairus7/wfdb_wrapper_jll.jl.git"}
 
 [compat]
+DSP = "0.8.4"
 FileUtils = "1.0.12"
 HypothesisTests = "0.11.6"
 OrderedCollections = "1.8.1"
+Plots = "1.41.5"
 Random = "1.11.0"
 StatsBase = "0.34.10"
 XMLDict = "0.4.1"

@@ -1,6 +1,8 @@
 module ArrhythmRelations
 
-using HypothesisTests
+using StatsBase
+using DSP
+using Plots
 
 include("scripts/Markups.jl")
 export Markup
@@ -11,9 +13,12 @@ export Fisher
 include("scripts/ArrhythmActivity.jl")
 export get_bitvecs
 
-# path = "C:\\Users\\fifteen\\.julia\\dev\\ArrhythmRelations\\test\\xmltest\\Ishem_Arithm.avt"
-# mkp = Markup(path)
-# arr, load, sense = get_bitvecs(mkp, "60")
-# println(Fisher(arr, sense))
+path = "C:\\Users\\fifteen\\.julia\\dev\\ArrhythmRelations\\test\\xmltest\\Ishem_Arithm.avt"
+mkp = Markup(path)
+arr, load, sense = get_bitvecs(mkp, "60")
+
+lag = -900:900
+
+plot(lag, crosscor(sense, arr, lag))
 
 end
