@@ -9,8 +9,9 @@ using Distributions
 # include("Markups.jl")
 # export Markup
 
-struct Stats
+struct StatsArrAct
     type::String
+    has_data::Bool
     fisher_qrs::Bool
     fisher_10s::Bool
     fisher_60s::Bool
@@ -23,9 +24,30 @@ struct Stats
     percent_qrs::Bool
     percent_10s::Bool
     percent_60s::Bool
-end
 
-# очень сомнительно, перепроверить ретерны
+    function StatsArrAct(mkp::Markup, marker::String)
+        if marker == "load"
+            event1_qrs, event2_qrs, _ = get_bitvecs_act_sense(mkp, "QRS")
+            event1_10s, event2_10s, _ = get_bitvecs_act_sense(mkp, "10")
+            event1_60s, event2_60s, _ = get_bitvecs_act_sense(mkp, "60")
+        elseif marker == "sense"
+            event1_qrs, _, event2_qrs = get_bitvecs_act_sense(mkp, "QRS")
+            event1_10s, _, event2_10s = get_bitvecs_act_sense(mkp, "10")
+            event1_60s, _, event2_60s = get_bitvecs_act_sense(mkp, "60")
+        else    
+            error("Enter the correct marker: load or sense")
+        end
+        
+        has_data = count(event2_60s) == 0 ? false : true
+
+        return new(marker, has_data,
+            Fisher(event1_qrs, event2_qrs), Fisher(event1_10s, event2_10s), Fisher(event1_60s, event2_60s),
+            chi2test(event1_qrs, event2_qrs), chi2test(event1_10s, event2_10s), chi2test(event1_60s, event2_60s),
+            binomtest(event1_qrs, event2_qrs), binomtest(event1_10s, event2_10s), binomtest(event1_60s, event2_60s),
+            percenttest(event1_qrs, event2_qrs), percenttest(event1_10s, event2_10s), percenttest(event1_60s, event2_60s)
+            )
+    end
+end
 
 function Fisher(event1::BitVector, event2::BitVector)
     if length(event1) != length(event2)
@@ -69,32 +91,10 @@ function percenttest(event::BitVector, bernoulli::BitVector)
     end
 end
 
-# можно и по-красивее
-
-function get_stats(mkp::Markup, marker::String)
-    if marker == "load"
-        event1_qrs, event2_qrs, _ = get_bitvecs(mkp, "QRS")
-        event1_10s, event2_10s, _ = get_bitvecs(mkp, "10")
-        event1_60s, event2_60s, _ = get_bitvecs(mkp, "60")
-    elseif marker == "sense"
-        event1_qrs, _, event2_qrs = get_bitvecs(mkp, "QRS")
-        event1_10s, _, event2_10s = get_bitvecs(mkp, "10")
-        event1_60s, _, event2_60s = get_bitvecs(mkp, "60")
-    else    
-        error("Enter the correct marker: load or sense")
-    end
-    
-    return Stats(marker,
-        Fisher(event1_qrs, event2_qrs), Fisher(event1_10s, event2_10s), Fisher(event1_60s, event2_60s),
-        chi2test(event1_qrs, event2_qrs), chi2test(event1_10s, event2_10s), chi2test(event1_60s, event2_60s),
-        binomtest(event1_qrs, event2_qrs), binomtest(event1_10s, event2_10s), binomtest(event1_60s, event2_60s),
-        percenttest(event1_qrs, event2_qrs), percenttest(event1_10s, event2_10s), percenttest(event1_60s, event2_60s)
-        )
+function Bernoulli(n_total, n_intersec, p)
+    return binomial(n_total, n_intersec) * p^n_intersec * (1 - p)^(n_total - n_intersec)
 end
 
-bv1 = BitVector([1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0])
-bv2 = BitVector([1, 1, 0, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0, 0])
-chi2test(bv1, bv2)
 
 # path = "C:\\Users\\rika\\Documents\\etu\\incart\\ArrhythmRelations.jl\\test\\data\\Ishem_Arithm.avt"
 # mkp = Markup(path)

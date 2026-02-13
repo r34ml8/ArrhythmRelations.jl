@@ -1,6 +1,6 @@
 using XLSX
 
-function form_table()
+function form_table_arr_act()
     XLSX.openxlsx("relations.xlsx", mode="w") do xf
         load = xf[1]
         XLSX.rename!(load, "Load")
@@ -37,8 +37,11 @@ function form_table()
     end
 end
 
-function add_row(fn::String, res::Stats)
-    XLSX.openxlsx("relations.xlsx", mode="w") do xf
+function add_row_arr_act(fn::String, res::Stats)
+    XLSX.openxlsx("relations.xlsx", mode="rw") do xf
+        if !res.has_data
+            return nothing
+        end
         sheet = xf[1]
         if res.type == "sense"
             sheet = xf[2]
