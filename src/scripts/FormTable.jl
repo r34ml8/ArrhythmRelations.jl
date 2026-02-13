@@ -1,9 +1,10 @@
-using DataFrames, XLSX
+using XLSX
 
 function form_table()
-    openxlsx("relations.xlsx", mode="w") do xf
-        load = xf["Load"]
-        sense = xf["Sense"]
+    XLSX.openxlsx("relations.xlsx", mode="w") do xf
+        load = xf[1]
+        XLSX.rename!(load, "Load")
+        XLSX.addsheet!(xf, "Sense")
 
         load["A1"] = "Filename"
         load["B1"] = "Fisher QRS"
@@ -19,21 +20,34 @@ function form_table()
         load["L1"] = "Percent 10s"
         load["M1"] = "Percent 60s"
 
-        sense["A1":"M1"] = load["A1":"M1"]
+        sense = xf[2]
+        sense["A1"] = "Filename"
+        sense["B1"] = "Fisher QRS"
+        sense["C1"] = "Fisher 10s"
+        sense["D1"] = "Fisher 60s"
+        sense["E1"] = "Chi2 QRS"
+        sense["F1"] = "Chi2 10s"
+        sense["G1"] = "Chi2 60s"
+        sense["H1"] = "Binom QRS"
+        sense["I1"] = "Binom 10s"
+        sense["J1"] = "Binom 60s"
+        sense["K1"] = "Percent QRS"
+        sense["L1"] = "Percent 10s"
+        sense["M1"] = "Percent 60s"
     end
 end
 
 function add_row(fn::String, res::Stats)
-    openxlsx("relations.xlsx", mode="w") do xf
-        sheet = xf["Load"]
-        if res.marker == "sense"
-            sheet = xf["Sense"]
-        elseif res.marker != "load"
+    XLSX.openxlsx("relations.xlsx", mode="w") do xf
+        sheet = xf[1]
+        if res.type == "sense"
+            sheet = xf[2]
+        elseif res.type != "load"
             error("Stats has wrong marker. Change it to load or sense.")
         end
 
         i = 1
-        while sheet["A$i"] != ""
+        while !ismissing(sheet["A$i"])
             i += 1
         end
 

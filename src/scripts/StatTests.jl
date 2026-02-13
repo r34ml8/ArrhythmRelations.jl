@@ -1,12 +1,13 @@
 using HypothesisTests
+using Distributions
 # using StatsBase
 # using Plots
 
-include("ArrhythmActivity.jl")
-export get_bitvecs
+# include("ArrhythmActivity.jl")
+# export get_bitvecs
 
-include("Markups.jl")
-export Markup
+# include("Markups.jl")
+# export Markup
 
 struct Stats
     type::String
@@ -35,12 +36,25 @@ function Fisher(event1::BitVector, event2::BitVector)
     b = count(.!event1 .& event2)
     c = count(event1 .& .!event2)
     d = count(.!event1 .& .!event2)
-    # @info a, b, c, d
+
     return pvalue(FisherExactTest(a, b, c, d)) < 0.05 
 end
 
 function chi2test(event1::BitVector, event2::BitVector)
-    return pvalue(ChisqTest(event1, event2)) < 0.05
+    a = count(event1 .& event2)
+    b = count(.!event1 .& event2)
+    c = count(event1 .& .!event2)
+    d = count(.!event1 .& .!event2)
+    n = a + b + c + d
+
+    e11 = (a + b) * (a + c) / n
+    e12 = (a + b) * (b + d) / n
+    e21 = (c + d) * (a + c) / n
+    e22 = (c + d) * (b + d) / n
+
+    chiq = (abs(e11 - a) - 0.5)^2 / e11 + (abs(e12 - b) - 0.5)^2 / e12 + (abs(e21 - c) - 0.5)^2 / e21 + (abs(e22 - d) - 0.5)^2 / e22
+
+    return ccdf(Chisq(1), chiq) < 0.05
 end
 
 function binomtest(event::BitVector, bernoulli::BitVector)
@@ -78,17 +92,21 @@ function get_stats(mkp::Markup, marker::String)
         )
 end
 
-path = "C:\\Users\\rika\\Documents\\etu\\incart\\ArrhythmRelations.jl\\test\\data\\Ishem_Arithm.avt"
-mkp = Markup(path)
-arr, load, sense = get_bitvecs(mkp, "60")
-inv = Fisher(arr, load)
-pvalue(inv)
-inv2 = chi2(arr, sense)
-pvalue(inv2)
-inv3 = binomtest(arr, load)
-pvalue(inv3)
-inv4 = percenttest(arr, load)
-inv4
+bv1 = BitVector([1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0])
+bv2 = BitVector([1, 1, 0, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0, 0])
+chi2test(bv1, bv2)
+
+# path = "C:\\Users\\rika\\Documents\\etu\\incart\\ArrhythmRelations.jl\\test\\data\\Ishem_Arithm.avt"
+# mkp = Markup(path)
+# arr, load, sense = get_bitvecs(mkp, "QRS")
+# inv = Fisher(arr, sense)
+# pvalue(inv)
+# inv2 = chi2(arr, sense)
+# pvalue(inv2)
+# inv3 = binomtest(arr, load)
+# pvalue(inv3)
+# inv4 = percenttest(arr, load)
+# inv4
 
 
 # эксперименты с кросс-корреляцией и чисткой данных
