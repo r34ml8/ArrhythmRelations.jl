@@ -4,6 +4,29 @@ using Random
 
 path = "C:\\Users\\fifteen\\.julia\\dev\\ArrhythmRelations\\test\\xmltest"
 folders = ["ChildArithm.avt", "Ishem_Arithm.avt", "ReoBreath.avt", "Seminar_AD_FP.avt", "VMT_Arrh_101159.avt"]
+
+@testset "Circadian Arrhythmia" begin
+    for el in folders
+        local suc = true
+        mkp = Markup(path * "\\" * el)
+        try
+            CircArr(mkp)
+        catch e
+            suc = false
+            @error "Ошибка при создании CircArr для $el"
+            showerror(stdout, e, catch_backtrace())
+        end
+        @test suc
+        if suc
+            io = IOBuffer()
+            show(io, CircArr(mkp))
+            output = String(take!(io))
+            println("Вывод для записи $el")
+            println(output)
+        end
+    end
+end
+
 @testset "Arrhythmia/ST" begin
     for el in folders
         local suc = true
@@ -30,6 +53,7 @@ folders = ["ChildArithm.avt", "Ishem_Arithm.avt", "ReoBreath.avt", "Seminar_AD_F
         end
     end
 end
+
 @testset "Arrhythmia/Activity" begin
     local suc = true
     try

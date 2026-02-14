@@ -42,9 +42,9 @@ using FileUtils
     end
 end
 
-path = "C:\\Users\\fifteen\\.julia\\dev\\ArrhythmRelations\\test\\xmltest\\ReoBreath.avt"
-mkp = Markup(path)
-println(mkp.periods.ST_periods)
+# path = "C:\\Users\\fifteen\\.julia\\dev\\ArrhythmRelations\\test\\xmltest\\ReoBreath.avt"
+# mkp = Markup(path)
+# (mkp.exam.fs_base)
 
 # const SENSATIONS::Vector{NTuple{3, String}} = [
 #     ("Sensation/A"    , "anxiety"             , "Тревога"),

@@ -8,12 +8,16 @@ export get_bitvecs_act_sense, ibeg_iend2bv_qrs
 
 include("scripts/StatTests.jl")
 export Fisher, chi2test, binomtest,
-    percenttest, StatsArrAct, BernoulliTest
+    percenttest, StatsArrAct, BernoulliTest,
+    tTestStudent
 
 include("scripts/FormTable.jl")
 export form_table_arr_act, add_row_arr_act
 
 include("scripts/ArrhythmIschST.jl")
 export ArrhythmIschST
+
+include("scripts/CircadArrhythm.jl")
+export CircArr, get_var
 
 end

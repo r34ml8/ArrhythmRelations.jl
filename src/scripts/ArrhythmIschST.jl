@@ -39,13 +39,6 @@ struct ArrhythmIschST
     end
 end
 
-function findRelationArrST(p_ST::Number, n_total::Int, n_intersec::Int)
-    p = BernoulliTest(n_total, n_intersec, p_ST, true)
-    expected = n_total * p_ST
-    odds_ratio = (n_intersec / n_total) / (expected / (n_total - expected))
-    return p, expected, odds_ratio, p < 0.05
-end
-
 function Base.show(io::IO, res::ArrhythmIschST)
     if res.has_ST
         println(io, "Анализ записи на наличие связи между аритмиями и ST периодами типа ", join(res.type, ", "))
@@ -62,4 +55,11 @@ function Base.show(io::IO, res::ArrhythmIschST)
     else
         println(io, "Периоды ST не обнаружены")
     end
+end
+
+function findRelationArrST(p_ST::Number, n_total::Int, n_intersec::Int)
+    p = BernoulliTest(n_total, n_intersec, p_ST, true)
+    expected = n_total * p_ST
+    odds_ratio = (n_intersec / n_total) / (expected / (n_total - expected))
+    return p, expected, odds_ratio, p < 0.05
 end
