@@ -3,14 +3,17 @@ module ArrhythmRelations
 include("scripts/Markups.jl")
 export Markup
 
-include("scripts/ArrhythmActivity.jl")
-export get_bitvecs
+include("scripts/GetBitvecs.jl")
+export get_bitvecs_act_sense, ibeg_iend2bv_qrs
 
 include("scripts/StatTests.jl")
 export Fisher, chi2test, binomtest,
-    percenttest, Stats, get_stats
+    percenttest, StatsArrAct, BernoulliTest
 
 include("scripts/FormTable.jl")
-export form_table, add_row
+export form_table_arr_act, add_row_arr_act
+
+include("scripts/ArrhythmIschST.jl")
+export ArrhythmIschST
 
 end

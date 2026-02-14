@@ -42,9 +42,9 @@ using FileUtils
     end
 end
 
-path = "C:\\Users\\fifteen\\.julia\\dev\\ArrhythmRelations\\test\\xmltest\\Ishem_Arithm.avt"
+path = "C:\\Users\\fifteen\\.julia\\dev\\ArrhythmRelations\\test\\xmltest\\ReoBreath.avt"
 mkp = Markup(path)
-typeof(mkp.periods.ST_periods)
+println(mkp.periods.ST_periods)
 
 # const SENSATIONS::Vector{NTuple{3, String}} = [
 #     ("Sensation/A"    , "anxiety"             , "Тревога"),

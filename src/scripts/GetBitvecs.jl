@@ -1,15 +1,10 @@
 using TimeSamplings
-
 # include("Markups.jl")
 # export Markup
 # path = "C:\\Users\\fifteen\\.julia\\dev\\ArrhythmRelations\\test\\xmltest\\Ishem_Arithm.avt"
 
 function get_bitvecs_act_sense(mkp::Markup, marker::String)
     arr_qrs = mkp.arrs[1].BitSet
-
-    for el in mkp.arrs
-        arr_qrs .| el.BitSet
-    end
 
     act_qrs, sense_qrs = get_activity_bitvec_qrs(mkp)
     load_10s_from_motion = mkp.periods.motion_bitvec10 .| mkp.periods.walking_bitvec10

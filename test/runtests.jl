@@ -2,17 +2,54 @@ using ArrhythmRelations
 using Test
 using Random
 
-@testset "ArrhythmRelations.jl" begin
-    path = "C:\\Users\\fifteen\\.julia\\dev\\ArrhythmRelations\\test\\xmltest"
-    folders = ["ChildArithm.avt", "Ishem_Arithm.avt", "ReoBreath.avt", "Seminar_AD_FP.avt", "VMT_Arrh_101159.avt"]
-    form_table_arr_act()
+path = "C:\\Users\\fifteen\\.julia\\dev\\ArrhythmRelations\\test\\xmltest"
+folders = ["ChildArithm.avt", "Ishem_Arithm.avt", "ReoBreath.avt", "Seminar_AD_FP.avt", "VMT_Arrh_101159.avt"]
+@testset "Arrhythmia/ST" begin
     for el in folders
+        local suc = true
         mkp = Markup(path * "\\" * el)
-        add_row_arr_act(el, StatsArrAct(mkp, "load"))
-        add_row_arr_act(el, StatsArrAct(mkp, "sense"))
+        try
+            ArrhythmIschST(mkp)
+        catch e
+            suc = false
+            @error "Ошибка при создании ArrhythmIschST для $el"
+            showerror(stdout, e, catch_backtrace())
+        end
+        @test suc
+        if suc
+            io = IOBuffer()
+            show(io, ArrhythmIschST(mkp))
+            output = String(take!(io))
+            println("Вывод для записи $el")
+            println(output)
+            if el != "Ishem_Arithm.avt"
+                @test output == "Периоды ST не обнаружены\n"
+            else
+                @test output != "Периоды ST не обнаружены\n"
+            end
+        end
     end
 end
-
+@testset "Arrhythmia/Activity" begin
+    local suc = true
+    try
+        form_table_arr_act()
+    catch
+        suc = false
+    end
+    @test suc
+    for el in folders
+        mkp = Markup(path * "\\" * el)
+        local suc = true
+        try
+            add_row_arr_act(el, StatsArrAct(mkp, "load"))
+            add_row_arr_act(el, StatsArrAct(mkp, "sense"))
+        catch
+            suc = false
+        end
+        @test suc
+    end
+end
 @testset "StatTests.jl" begin
     bv1 = BitVector([1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0])
     bv2 = BitVector([1, 1, 0, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0, 0])

@@ -91,8 +91,13 @@ function percenttest(event::BitVector, bernoulli::BitVector)
     end
 end
 
-function Bernoulli(n_total, n_intersec, p)
-    return binomial(n_total, n_intersec) * p^n_intersec * (1 - p)^(n_total - n_intersec)
+function BernoulliTest(n_total::Int, n_intersec::Int, p::Number, return_p::Bool = false)
+    p = binomial(BigInt(n_total), n_intersec) * p^n_intersec * (1 - p)^(n_total - n_intersec)
+    if return_p
+        return p
+    else
+        return p < 0.05
+    end
 end
 
 

@@ -37,7 +37,7 @@ function form_table_arr_act()
     end
 end
 
-function add_row_arr_act(fn::String, res::Stats)
+function add_row_arr_act(fn::String, res::StatsArrAct)
     XLSX.openxlsx("relations.xlsx", mode="rw") do xf
         if !res.has_data
             return nothing
