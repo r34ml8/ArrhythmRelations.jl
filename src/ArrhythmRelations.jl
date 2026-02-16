@@ -18,6 +18,6 @@ include("scripts/ArrhythmIschST.jl")
 export ArrhythmIschST
 
 include("scripts/CircadArrhythm.jl")
-export CircArr, get_var
+export CircArr, get_var, _mean
 
 end

@@ -101,7 +101,6 @@ function BernoulliTest(n_total::Int, n_intersec::Int, p::Number, return_p::Bool 
 end
 
 function tTestStudent(event1, event2)
-    @show event1, event2
     if any(!=(0), event1) & any(!=(0), event2)
         return pvalue(UnequalVarianceTTest(event1, event2)) < 0.05
     else
