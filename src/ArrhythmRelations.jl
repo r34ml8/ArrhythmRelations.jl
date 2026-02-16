@@ -1,5 +1,7 @@
 module ArrhythmRelations
 
+using Printf
+
 include("scripts/Markups.jl")
 export Markup
 

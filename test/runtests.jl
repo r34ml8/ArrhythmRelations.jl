@@ -23,6 +23,17 @@ folders = ["ChildArithm.avt", "Ishem_Arithm.avt", "ReoBreath.avt", "Seminar_AD_F
             output = String(take!(io))
             println("Вывод для записи $el")
             println(output)
+            if el in ["Ishem_Arithm.avt", "ReoBreath.avt", "Seminar_AD_FP.avt"]
+                @test occursin(" желудочковых аритмий\nНевозможно", output)
+            else
+                @test !occursin(" желудочковых аритмий\nНевозможно", output)
+            end
+
+            if el == "ReoBreath.avt"
+                @test !occursin("наджелудочковых аритмий\nНевозможно", output)
+            else
+                @test occursin("наджелудочковых аритмий\nНевозможно", output)
+            end
         end
     end
 end

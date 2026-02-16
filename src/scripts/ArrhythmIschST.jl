@@ -47,11 +47,11 @@ function Base.show(io::IO, res::ArrhythmIschST)
         else 
             println(io, "Связь не обнаружена")
         end
-        println(io, "p_value = ", res.p)
+        println(io, "p_value = ", @sprintf "%.3e" res.p)
         println(io, "Всего аритмий: ", res.arr_total_count)
         println(io, "Аритмий на ST периоде: ", res.arr_on_ST_count)
-        println(io, "Ожидаемое число аритмий: ", res.expect)
-        println(io, "Отношение шансов: ", res.odds_ratio)
+        println(io, "Ожидаемое число аритмий: ", @sprintf "%.3f" res.expect)
+        println(io, "Отношение шансов: ", @sprintf "%.3f" res.odds_ratio)
     else
         println(io, "Периоды ST не обнаружены")
     end
