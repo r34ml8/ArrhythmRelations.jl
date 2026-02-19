@@ -1,7 +1,7 @@
 name = "ArrhythmRelations"
 uuid = "a2daa527-c2e6-4085-b47f-8980de360814"
-version = "1.0.0-DEV"
 authors = ["Razheva Elena <razh348@gmail.com> and contributors"]
+version = "1.0.0-DEV"
 
 [deps]
 DSP = "717857b8-e6f2-59f4-9121-6e50c889abd2"
@@ -12,6 +12,7 @@ FileUtils = "61402b12-eb4b-4f0c-a04f-adfcfe5d14e4"
 HypothesisTests = "09f84164-cd44-5f33-b23f-e6b0d136a0d5"
 IBoxAccess = "1607262a-405a-4f9a-89bc-45a61e12db11"
 OrderedCollections = "bac558e1-5e72-5ebc-8fee-abe8a469f55d"
+Plots = "91a5bcdd-55d7-5caf-9e0b-520d859cae80"
 Printf = "de0858da-6303-5e67-8744-51eddeeeb8d7"
 Random = "9a3f8284-a2c9-5f02-9a11-845980a1fd5c"
 TimeSamplings = "ed45db17-24e9-469d-8275-17d3d36e28e6"
@@ -22,6 +23,7 @@ wfdb_wrapper_jll = "cfa65b43-6878-5963-b59c-e7edc60d5dc9"
 [sources]
 Descriptors = {url = "https://github.com/IncartStudents/Descriptors.jl"}
 FileUnv_jll = {url = "https://github.com/a-mikhaylov/FileUnv_jll.jl.git"}
+FileUtils = {url = "https://github.com/IncartStudents/FileUtils.jl"}
 IBoxAccess = {url = "https://github.com/IncartStudents/IBoxAccess.jl"}
 TimeSamplings = {url = "https://github.com/IncartStudents/TimeSamplings.jl"}
 wfdb_wrapper_jll = {url = "https://github.com/sairus7/wfdb_wrapper_jll.jl.git"}
@@ -32,6 +34,7 @@ Distributions = "0.25.123"
 FileUtils = "1.0.12"
 HypothesisTests = "0.11.6"
 OrderedCollections = "1.8.1"
+Plots = "1.41.5"
 Printf = "1.11.0"
 Random = "1.11.0"
 XLSX = "0.10.4"
