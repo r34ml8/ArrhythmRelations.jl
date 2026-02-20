@@ -25,26 +25,26 @@ function form_csv_arr_act(path::String)
 
             row = (
                 filename = basename(el),
-                fisher_qrs = res.fisher_qrs,
-                fisher_10s = res.fisher_10s,
-                fisher_60s = res.fisher_60s,
-                chi2_qrs = res.chi2_qrs,
-                chi2_10s = res.chi2_10s,
-                chi2_60s = res.chi2_60s,
-                binom_qrs = res.binom_qrs,
-                binom_10s = res.binom_10s,
-                binom_60s = res.binom_60s,
-                percent_qrs = res.percent_qrs,
-                percent_10s = res.percent_10s,
-                percent_60s = res.percent_60s
+                fisher_qrs = res.fisher_qrs ? "ДА" : "НЕТ",
+                fisher_10s = res.fisher_10s ? "ДА" : "НЕТ",
+                fisher_60s = res.fisher_60s ? "ДА" : "НЕТ",
+                chi2_qrs = res.chi2_qrs ? "ДА" : "НЕТ",
+                chi2_10s = res.chi2_10s ? "ДА" : "НЕТ",
+                chi2_60s = res.chi2_60s ? "ДА" : "НЕТ",
+                binom_qrs = res.binom_qrs ? "ДА" : "НЕТ",
+                binom_10s = res.binom_10s ? "ДА" : "НЕТ",
+                binom_60s = res.binom_60s ? "ДА" : "НЕТ",
+                percent_qrs = res.percent_qrs ? "ДА" : "НЕТ",
+                percent_10s = res.percent_10s ? "ДА" : "НЕТ",
+                percent_60s = res.percent_60s ? "ДА" : "НЕТ"
             )
 
             push!(df, row)
         end
     end
 
-    CSV.write("relations_load.csv", res["load"])
-    CSV.write("relations_sense.csv", res["sense"])
+    CSV.write("relations_load.csv", res_df["load"])
+    CSV.write("relations_sense.csv", res_df["sense"])
 
 end
 

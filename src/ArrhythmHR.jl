@@ -1,3 +1,7 @@
+module ArrhythmHR
+
+using ..StatTests
+using ..Markups
 # индивидуальный подбор окна с поправкой бонферрони + скользящее окно
 
 struct ArrHR
@@ -29,3 +33,4 @@ struct ArrHR
     end
 end
 
+end

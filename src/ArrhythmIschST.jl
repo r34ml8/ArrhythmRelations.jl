@@ -1,6 +1,12 @@
+module ArrhythmIschST
+
+using Printf
 using TimeSamplings
 
-struct ArrhythmIschST
+using ..StatTests
+using ..Markups
+
+struct ArrIschST
     type::Vector{String}
     p_ST::Number
     arr_total_count::Int
@@ -11,15 +17,19 @@ struct ArrhythmIschST
     p::Number
     has_ST::Bool
 
-    function ArrhythmIschST(mkp::Markup)
+    function ArrIschST(mkp::Markup)
         ST_raw = mkp.periods.ST_periods
         len = length(mkp.qrs.timeQ)
+
         ST = falses(len)
-        sampler = EventSampler(mkp.qrs.timeQ)
         type = String[]
+        sampler = EventSampler(mkp.qrs.timeQ)
         if !isnothing(ST_raw)
             for i in 1:length(ST_raw)
-                ST .|= ibeg_iend2bv_qrs(ST_raw.ibeg[i], ST_raw.iend[i], len, sampler)
+                i_qrs = sampler(ST_raw.ibeg[i]:ST_raw.iend[i])
+                mask = falses(len)
+                mask[i_qrs] = trues(length(i_qrs))
+                ST .|= mask
                 if !(ST_raw.Type[i] in type)
                     push!(type, ST_raw.Type[i])
                 end
@@ -39,7 +49,7 @@ struct ArrhythmIschST
     end
 end
 
-function Base.show(io::IO, res::ArrhythmIschST)
+function Base.show(io::IO, res::ArrIschST)
     if res.has_ST
         println(io, "Анализ записи на наличие связи между аритмиями и ST периодами типа ", join(res.type, ", "))
         if res.relation
@@ -62,4 +72,6 @@ function findRelationArrST(p_ST::Number, n_total::Int, n_intersec::Int)
     expected = n_total * p_ST
     odds_ratio = (n_intersec / n_total) / (expected / (n_total - expected))
     return p, expected, odds_ratio, p < 0.05
+end
+
 end

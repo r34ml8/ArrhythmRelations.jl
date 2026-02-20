@@ -1,3 +1,10 @@
+module CircadArrhythm
+
+using Printf
+
+using ..StatTests
+using ..Markups
+
 struct CircArr
     day_var_V::Number
     sleep_var_V::Number
@@ -161,4 +168,6 @@ function get_arr(mkp::Markup)
     end
     
     return arr_V, arr_S
+end
+
 end

@@ -1,10 +1,12 @@
 name = "ArrhythmRelations"
 uuid = "a2daa527-c2e6-4085-b47f-8980de360814"
-authors = ["Razheva Elena <razh348@gmail.com> and contributors"]
 version = "1.0.0-DEV"
+authors = ["Razheva Elena <razh348@gmail.com> and contributors"]
 
 [deps]
+CSV = "336ed68f-0bac-5ca0-87d4-7b16caf5d00b"
 DSP = "717857b8-e6f2-59f4-9121-6e50c889abd2"
+DataFrames = "a93c6f00-e57d-5684-b7b6-d8193f3e46c0"
 Descriptors = "b2dd10be-c0b5-41fc-bf7d-fdb86be5b335"
 Distributions = "31c24e10-a181-5473-b8eb-7969acd0382f"
 FileUnv_jll = "c10d0ea1-10c0-5fab-a796-b821f293b8d8"
@@ -29,7 +31,9 @@ TimeSamplings = {url = "https://github.com/IncartStudents/TimeSamplings.jl"}
 wfdb_wrapper_jll = {url = "https://github.com/sairus7/wfdb_wrapper_jll.jl.git"}
 
 [compat]
+CSV = "0.10.16"
 DSP = "0.8.4"
+DataFrames = "1.8.1"
 Distributions = "0.25.123"
 FileUtils = "1.0.12"
 HypothesisTests = "0.11.6"

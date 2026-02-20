@@ -1,6 +1,8 @@
+module Markups
 # from ReportConstructor.jl
 using FileUtils
-# using OrderedCollections
+
+export Markup
 
 @kwdef mutable struct Markup
     path::String = ""
@@ -42,7 +44,8 @@ using FileUtils
     end
 end
 
+end
 # path = "C:\\Users\\fifteen\\.julia\\dev\\ArrhythmRelations\\test\\xmltest\\ReoBreath.avt"
-path = "C:\\Users\\rika\\Documents\\etu\\incart\\ArrhythmRelations.jl\\test\\xmltest\\Ishem_Arithm.avt"
-mkp = Markup(path)
-mkp.trends.hr10
+# path = "C:\\Users\\rika\\Documents\\etu\\incart\\ArrhythmRelations.jl\\test\\xmltest\\Ishem_Arithm.avt"
+# mkp = Markup(path)
+# mkp.trends.hr10

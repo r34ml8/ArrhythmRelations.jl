@@ -1,6 +1,8 @@
 using ArrhythmRelations
 using Test
 using Random
+using .ArrhythmRelations.StatTests
+
 
 path = "C:\\Users\\fifteen\\.julia\\dev\\ArrhythmRelations\\test\\xmltest"
 folders = ["ChildArithm.avt", "Ishem_Arithm.avt", "ReoBreath.avt", "Seminar_AD_FP.avt", "VMT_Arrh_101159.avt"]
@@ -43,16 +45,16 @@ end
         local suc = true
         mkp = Markup(path * "\\" * el)
         try
-            ArrhythmIschST(mkp)
+            ArrIschST(mkp)
         catch e
             suc = false
-            @error "Ошибка при создании ArrhythmIschST для $el"
+            @error "Ошибка при создании ArrIschST для $el"
             showerror(stdout, e, catch_backtrace())
         end
         @test suc
         if suc
             io = IOBuffer()
-            show(io, ArrhythmIschST(mkp))
+            show(io, ArrIschST(mkp))
             output = String(take!(io))
             println("Вывод для записи $el")
             println(output)
@@ -68,35 +70,26 @@ end
 @testset "Arrhythmia/Activity" begin
     local suc = true
     try
-        form_table_arr_act()
-    catch
+        form_csv_arr_act(path)
+    catch e
         suc = false
+        showerror(stdout, e, catch_backtrace())
     end
-    @test suc
-    for el in folders
-        mkp = Markup(path * "\\" * el)
-        local suc = true
-        try
-            add_row_arr_act(el, StatsArrAct(mkp, "load"))
-            add_row_arr_act(el, StatsArrAct(mkp, "sense"))
-        catch
-            suc = false
-        end
-        @test suc
-    end
+    @test suc   
 end
+
 @testset "StatTests.jl" begin
     bv1 = BitVector([1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0])
     bv2 = BitVector([1, 1, 0, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0, 0])
-    @test !Fisher(bv1, bv2)
-    @test !chi2test(bv1, bv2)
-    @test !binomtest(bv1, bv2)
-    @test !percenttest(bv1, bv2)
+    @test !StatTests.Fisher(bv1, bv2)
+    @test !StatTests.chi2test(bv1, bv2)
+    @test !StatTests.binomtest(bv1, bv2)
+    @test !StatTests.percenttest(bv1, bv2)
 
     bv1 = BitVector([1, 1, 1, 0, 0, 0, 1, 1, 1, 0, 0, 0, 1, 1, 1, 0, 0, 0, 1, 1])
     bv2 = BitVector([1, 1, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 1, 1, 1, 0, 0, 0, 1, 1])
-    @test Fisher(bv1, bv2)
-    @test chi2test(bv1, bv2)
-    @test binomtest(bv1, bv2)
-    @test percenttest(bv1, bv2)
+    @test StatTests.Fisher(bv1, bv2)
+    @test StatTests.chi2test(bv1, bv2)
+    @test StatTests.binomtest(bv1, bv2)
+    @test StatTests.percenttest(bv1, bv2)
 end
