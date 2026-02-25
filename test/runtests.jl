@@ -2,10 +2,30 @@ using ArrhythmRelations
 using Test
 using Random
 using .ArrhythmRelations.StatTests
+using TimeSamplings
 
-
-path = "C:\\Users\\fifteen\\.julia\\dev\\ArrhythmRelations\\test\\xmltest"
+# path = "C:\\Users\\fifteen\\.julia\\dev\\ArrhythmRelations\\test\\xmltest"\
+path = "C:\\Users\\rika\\Documents\\etu\\incart\\ArrhythmRelations.jl\\test\\xmltest"
 folders = ["ChildArithm.avt", "Ishem_Arithm.avt", "ReoBreath.avt", "Seminar_AD_FP.avt", "VMT_Arrh_101159.avt"]
+
+# почему нули... и откуда наны возникают? типа ноль на ноль?
+@testset "TS" begin
+    for el in folders
+        mkp = Markup(path * "\\" * el)
+        try 
+            ArrHR(mkp)
+        catch e
+            @error "Ошибка при создании ArrHR для $el"
+            showerror(stdout, e, catch_backtrace())
+        end
+        io = IOBuffer()
+        show(io, ArrHR(mkp))
+        output = String(take!(io))
+        println("Вывод для записи $el")
+        println(output)
+        @test occursin("p_values", output)
+    end    
+end
 
 @testset "Circadian Arrhythmia" begin
     for el in folders

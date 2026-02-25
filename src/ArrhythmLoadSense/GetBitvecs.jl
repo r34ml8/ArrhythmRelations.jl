@@ -2,7 +2,7 @@ using TimeSamplings
 # include("Markups.jl")
 # export Markup
 # path = "C:\\Users\\fifteen\\.julia\\dev\\ArrhythmRelations\\test\\xmltest\\Ishem_Arithm.avt"
-
+ 
 function get_bitvecs_act_sense(mkp::Markup, marker::String)
     arr_qrs = mkp.arrs[1].BitSet
 
@@ -57,6 +57,12 @@ function ibeg_iend2bv_qrs(ibeg::Int, iend::Int, len::Int, sampler::EventSampler)
     bitvec[i_qrs] = trues(length(i_qrs))
     return bitvec
 end
+
+# function qrs2int(bv_qrs::BitVector, sampler::EventSampler, len_int::Int)
+#     a = sampler(0:60)
+#     tQ[a[88]]
+#     any(arr[a])
+# end
 
 function qrs2int(bv_qrs::BitVector, mkp::Markup, step::Int, len_bv_s::Int = length(mkp.trends.hr10))
     if step == 60

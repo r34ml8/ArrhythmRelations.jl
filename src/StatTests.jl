@@ -5,7 +5,7 @@ using Distributions
 
 export Fisher, chi2test, binomtest,
     percenttest, StatsArrAct, BernoulliTest,
-    tTestStudent
+    tTestStudent, tTest_return_p
 
 function Fisher(event1::BitVector, event2::BitVector)
     if length(event1) != length(event2)
@@ -58,7 +58,13 @@ function BernoulliTest(n_total::Int, n_intersec::Int, p::Number, return_p::Bool 
     end
 end
 
-function tTestStudent(event1, event2)
+function tTestStudent(event1, event2, return_p::Bool = false)
+    println(stderr, "event1 = ", event1)
+    println(stderr, "event2 = ", event2)
+    if return_p
+        return pvalue(UnequalVarianceTTest(event1, event2))
+    end
+
     if any(!=(0), event1) & any(!=(0), event2)
         return pvalue(UnequalVarianceTTest(event1, event2)) < 0.05
     else
@@ -66,8 +72,16 @@ function tTestStudent(event1, event2)
     end
 end
 
+# function tTest_return_p(event1::Vector, event2::Vector, paired::Bool)
+#     println(stderr, "event1 = ", event1)
+#     println(stderr, "event2 = ", event2)
+#     if paired
+#         return pvalue(OneSampleTTest(event1, event2))
+#     else
+#         return pvalue(UnequalVarianceTTest(event1, event2))
+#     end
+# end
 end
-
 # path = "C:\\Users\\rika\\Documents\\etu\\incart\\ArrhythmRelations.jl\\test\\data\\Ishem_Arithm.avt"
 # mkp = Markup(path)
 # arr, load, sense = get_bitvecs(mkp, "QRS")
