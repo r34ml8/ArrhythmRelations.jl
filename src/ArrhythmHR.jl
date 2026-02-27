@@ -13,6 +13,8 @@ struct ArrHR
     # arr::BitVector
     # hr::Vector{Int}
     p_values::Vector{Float64}
+    p_values_V::Vector{Float64}
+    p_values_S::Vector{Float64}
 
     function ArrHR(mkp::Markup)     
         hr_10 = mkp.trends.hr10
@@ -26,32 +28,39 @@ struct ArrHR
             end
         end
 
-        arr_qrs = mkp.arrs[1].BitSet 
-        sampler = EventSampler(mkp.qrs.timeQ ./ (mkp.exam.fs_base * 10))
-        arr_10 = falses(length(hr_10))
-        for i in eachindex(hr_10)
-            arr_10[i] = any(arr_qrs[sampler((i - 1):i)])
+        arr_V = falses(length(mkp.arrs[1].BitSet))
+        arr_S = falses(length(mkp.arrs[1].BitSet))
+        for (i, el) in enumerate(mkp.arrs)
+            if occursin(r"vV|rV", el.Code)
+                arr_V .|= el.BitSet
+            elseif occursin(r"vS|vA|vW|vB|rF|rS", el.Code)
+                arr_S .|= el.BitSet
+            end
         end
+ 
+        sampler = EventSampler(mkp.qrs.timeQ ./ (mkp.exam.fs_base * 10))
+        arr_10 = qrs_to_10(mkp.arrs[1].BitSet, length(hr_10), sampler)
+        arr_V_10 = qrs_to_10(arr_V, length(hr_10), sampler)
+        arr_S_10 = qrs_to_10(arr_S, length(hr_10), sampler)
 
-        p_values = [get_p_least_squares(arr_10, hr_10, win) for win in windows]
+        empty_windows = [get_empty_windows(arr_10, win) for win in windows]
+        p_values = [get_p_least_squares(arr_10, hr_10, windows[i], empty_windows[i]) for i in eachindex(windows)]
+        p_values_V = [get_p_least_squares(arr_V_10, hr_10, windows[i], empty_windows[i]) for i in eachindex(windows)]
+        p_values_S = [get_p_least_squares(arr_S_10, hr_10, windows[i], empty_windows[i]) for i in eachindex(windows)]
 
-        return new(p_values)
+        return new(p_values, p_values_V, p_values_S)
     end
 end
 
-Base.show(io::IO, res::ArrHR) = println(io, "p_values = ", res.p_values)
+function Base.show(io::IO, res::ArrHR)
+    println(io, "p_values = ", res.p_values)
+    println(io, "p_values_V = ", res.p_values_V)
+    println(io, "p_values_S = ", res.p_values_S)
+end
 
+qrs_to_10(arr_qrs::BitVector, len::Int, sampler::EventSampler) = [any(arr_qrs[sampler((i - 1):i)]) for i in 1:len]
 
-function get_p_least_squares(arr::BitVector, hr::Vector{Int64}, win::Int64)
-    arr_windows = Int[]
-    for (i, el) in enumerate(arr)
-        if el & (i > win)
-            if !any(arr[i - win:i - 1])
-                push!(arr_windows, i - win)
-            end
-        end
-    end
-
+function get_empty_windows(arr::Vector{Bool}, win::Int64)
     empty_windows = Int[]
     j = 1
     while j <= length(arr) - win * 3 + 1
@@ -63,11 +72,21 @@ function get_p_least_squares(arr::BitVector, hr::Vector{Int64}, win::Int64)
         end
     end
 
-    # if length(arr_windows) <= length(empty_windows)
-    #     empty_windows = sort(sample(empty_windows, length(arr_windows), replace=false))
-    # end
+    return empty_windows
+end
 
-    if (length(arr_windows) < 30) | (length(empty_windows) < 30)
+function get_p_least_squares(arr::Vector{Bool}, hr::Vector{Int64}, win::Int64, empty_windows::Vector{Int64})
+    arr_windows = Int[]
+    for (i, el) in enumerate(arr)
+        if el & (i > win)
+            if !any(arr[i - win:i - 1])
+                push!(arr_windows, i - win)
+            end
+        end
+    end
+
+    if (length(arr_windows) < 30) || (length(empty_windows) < 30)
+        println("less than 30 windows")
         return NaN
     end
 
