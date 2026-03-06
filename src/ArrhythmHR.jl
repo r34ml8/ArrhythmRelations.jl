@@ -16,21 +16,21 @@ struct ArrHR
     p_values_V::Vector{Float64}
     p_values_S::Vector{Float64}
 
+    arrs::Vector{Vector{Float64}}
+    arrs_V::Vector{Vector{Float64}}
+    arrs_S::Vector{Vector{Float64}}
+    
+    empty::Vector{Vector{Float64}}
+    empty_V::Vector{Vector{Float64}}
+    empty_S::Vector{Vector{Float64}}
+    
+
     function ArrHR(mkp::Markup)     
         hr_10 = mkp.trends.hr10
-        for (i, el) in enumerate(hr_10)
-            if !(el isa Int64)
-                if i > 1
-                    hr_10[i] = hr_10[i - 1]
-                else
-                    hr_10[i] = hr_10[i + 1]
-                end
-            end
-        end
-
+        
         arr_V = falses(length(mkp.arrs[1].BitSet))
         arr_S = falses(length(mkp.arrs[1].BitSet))
-        for (i, el) in enumerate(mkp.arrs)
+        for el in mkp.arrs
             if occursin(r"vV|rV", el.Code)
                 arr_V .|= el.BitSet
             elseif occursin(r"vS|vA|vW|vB|rF|rS", el.Code)
@@ -44,11 +44,12 @@ struct ArrHR
         arr_S_10 = qrs_to_10(arr_S, length(hr_10), sampler)
 
         empty_windows = [get_empty_windows(arr_10, win) for win in windows]
-        p_values = [get_p_least_squares(arr_10, hr_10, windows[i], empty_windows[i]) for i in eachindex(windows)]
-        p_values_V = [get_p_least_squares(arr_V_10, hr_10, windows[i], empty_windows[i]) for i in eachindex(windows)]
-        p_values_S = [get_p_least_squares(arr_S_10, hr_10, windows[i], empty_windows[i]) for i in eachindex(windows)]
+        p_values, arrs, empty = get_p(arr_10, hr_10, windows, empty_windows)
+        p_values_V, arrs_V, empty_V = get_p(arr_V_10, hr_10, windows, empty_windows)
+        p_values_S, arrs_S, empty_S = get_p(arr_S_10, hr_10, windows, empty_windows)
 
-        return new(p_values, p_values_V, p_values_S)
+        
+        return new(p_values, p_values_V, p_values_S, arrs, arrs_V, arrs_S, empty, empty_V, empty_S)
     end
 end
 
@@ -57,6 +58,31 @@ function Base.show(io::IO, res::ArrHR)
     println(io, "p_values_V = ", res.p_values_V)
     println(io, "p_values_S = ", res.p_values_S)
 end
+
+function get_p(arr_10, hr_10, windows, empty_windows)
+    p_values = []
+    arrs = []
+    empties = []
+    for i in eachindex(windows)
+        p, arr, empty = get_p_least_squares(arr_10, hr_10, windows[i], empty_windows[i])
+        if !isnan(p)
+            push!(arrs, arr)
+            push!(empties, empty)
+        end
+        push!(p_values, p)
+    end
+
+    return p_values, arrs, empties
+end
+
+# function get_plots(event1, event2, fn::String, win::Int64)
+#     histogram(event1, normalize=:true)
+#     histogram!(event2, normalize=:true)
+#     try
+#         cd(pwd() * "\\test\\plots\\histogram\\" * fn)
+#     catch e
+#     savefig(".png")
+# end
 
 qrs_to_10(arr_qrs::BitVector, len::Int, sampler::EventSampler) = [any(arr_qrs[sampler((i - 1):i)]) for i in 1:len]
 
@@ -85,25 +111,51 @@ function get_p_least_squares(arr::Vector{Bool}, hr::Vector{Int64}, win::Int64, e
         end
     end
 
+    arr_windows = check_windows(hr, arr_windows, win)
+    empty_windows = check_windows(hr, empty_windows, win)
+
     if (length(arr_windows) < 30) || (length(empty_windows) < 30)
-        println("less than 30 windows")
+        # println("less than 30 windows")
         return NaN
+    elseif length(arr_windows) < length(empty_windows)
+        empty_windows = sample(empty_windows, length(arr_windows), replace=false)
+    else
+        arr_windows = sample(arr_windows, length(empty_windows), replace=false)
     end
 
     coeffs_arr = [least_squares(hr[i:i + win - 1]) for i in arr_windows]
-    filter!(!isnan, coeffs_arr) 
+    # println(stderr, "coeffs_arr had zeros: ", count(==(0), coeffs_arr))
     coeffs_empty = [least_squares(hr[i:i + win - 1]) for i in empty_windows]
-    filter!(!isnan, coeffs_empty)
+    # println(stderr, "coeffs_empty had zeros: ", count(==(0), coeffs_empty))
+
+
+    return tTestStudent(coeffs_arr, coeffs_empty), coeffs_arr, coeffs_empty
+end
+
+function check_windows(hr::Vector{Int64}, windows::Vector{Int64}, win::Int)
+    wrong = Int[]
+    for (i, el) in enumerate(windows)
+        if -2147483648 in hr[el:el + win - 1]
+            push!(wrong, i)
+        end
+    end
+
+    # println(stderr, wrong)
     
-    return tTestStudent(coeffs_arr, coeffs_empty)
+    # println(stderr, "before ", length(windows))
+    deleteat!(windows, wrong)
+    # println(stderr, "after ", length(windows))
+    return windows
 end
 
 function least_squares(vec::Vector{Int64})
-    mult = [el * i for (i, el) in enumerate(vec)]
-    square = vec .^ 2
-    mean_x = mean(vec)
+    # println(stderr, vec)
+    x = 1:length(vec)
+    mean_x = mean(x)
+    cov_xy = mean(x .* vec) - mean_x * mean(vec)
+    var_x = mean(x.^2) - mean_x^2
 
-    return (mean(mult) - mean_x * mean(1:length(vec))) / (mean(square) - mean_x ^ 2)
+    return cov_xy / var_x 
 end
 
 end

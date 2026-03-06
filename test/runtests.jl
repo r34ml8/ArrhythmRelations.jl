@@ -1,15 +1,15 @@
 using ArrhythmRelations
 using Test
-using Random
+# using Random
 using .ArrhythmRelations.StatTests
 using TimeSamplings
 
-# path = "C:\\Users\\fifteen\\.julia\\dev\\ArrhythmRelations\\test\\xmltest"\
-path = "C:\\Users\\rika\\Documents\\etu\\incart\\ArrhythmRelations.jl\\test\\xmltest"
+path = "C:\\Users\\fifteen\\.julia\\dev\\ArrhythmRelations\\test\\xmltest"
+# path = "C:\\Users\\rika\\Documents\\etu\\incart\\ArrhythmRelations.jl\\test\\xmltest"
 folders = ["ChildArithm.avt", "Ishem_Arithm.avt", "ReoBreath.avt", "Seminar_AD_FP.avt", "VMT_Arrh_101159.avt"]
 
 # почему нули... и откуда наны возникают? типа ноль на ноль?
-@testset "TS" begin
+@testset "ArrhythmHR" begin
     for el in folders
         mkp = Markup(path * "\\" * el)
         try 

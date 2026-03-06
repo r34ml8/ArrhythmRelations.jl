@@ -59,7 +59,7 @@ function BernoulliTest(n_total::Int, n_intersec::Int, p::Number, return_p::Bool 
 end
 
 function tTestStudent(event1, event2, return_p::Bool = false)
-    println(stderr, "here")
+    # println(stderr, "here")
     
     # println(stderr, "event1 = ", event1)
     # println(stderr, "event2 = ", event2)
