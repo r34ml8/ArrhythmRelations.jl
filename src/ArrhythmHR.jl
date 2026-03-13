@@ -23,6 +23,14 @@ struct ArrHR
     empty::Vector{Vector{Float64}}
     empty_V::Vector{Vector{Float64}}
     empty_S::Vector{Vector{Float64}}
+
+    arr_windows::Vector{Vector{Int}}
+    arr_windows_V::Vector{Vector{Int}}
+    arr_windows_S::Vector{Vector{Int}}
+
+    empty_windows::Vector{Vector{Int}}
+    # empty_windows_V::Vector{Vector{Int}}
+    # empty_windows_S::Vector{Vector{Int}}
     
 
     function ArrHR(mkp::Markup)     
@@ -44,12 +52,16 @@ struct ArrHR
         arr_S_10 = qrs_to_10(arr_S, length(hr_10), sampler)
 
         empty_windows = [get_empty_windows(arr_10, win) for win in windows]
-        p_values, arrs, empty = get_p(arr_10, hr_10, windows, empty_windows)
-        p_values_V, arrs_V, empty_V = get_p(arr_V_10, hr_10, windows, empty_windows)
-        p_values_S, arrs_S, empty_S = get_p(arr_S_10, hr_10, windows, empty_windows)
+        p_values, arrs, empty, arr_windows = get_p(arr_10, hr_10, windows, empty_windows)
+        p_values_V, arrs_V, empty_V, arr_windows_V = get_p(arr_V_10, hr_10, windows, empty_windows)
+        p_values_S, arrs_S, empty_S, arr_windows_S = get_p(arr_S_10, hr_10, windows, empty_windows)
 
         
-        return new(p_values, p_values_V, p_values_S, arrs, arrs_V, arrs_S, empty, empty_V, empty_S)
+        return new(p_values, p_values_V, p_values_S,
+        arrs, arrs_V, arrs_S,
+        empty, empty_V, empty_S,
+        arr_windows, arr_windows_V, arr_windows_S,
+        empty_windows)
     end
 end
 
@@ -63,26 +75,19 @@ function get_p(arr_10, hr_10, windows, empty_windows)
     p_values = []
     arrs = []
     empties = []
+    arr_windows = []
     for i in eachindex(windows)
-        p, arr, empty = get_p_least_squares(arr_10, hr_10, windows[i], empty_windows[i])
+        p, arr, empty, arr_wins = get_p_least_squares(arr_10, hr_10, windows[i], empty_windows[i])
         if !isnan(p)
             push!(arrs, arr)
             push!(empties, empty)
+            push!(arr_windows, arr_wins)
         end
         push!(p_values, p)
     end
 
-    return p_values, arrs, empties
+    return p_values, arrs, empties, arr_windows
 end
-
-# function get_plots(event1, event2, fn::String, win::Int64)
-#     histogram(event1, normalize=:true)
-#     histogram!(event2, normalize=:true)
-#     try
-#         cd(pwd() * "\\test\\plots\\histogram\\" * fn)
-#     catch e
-#     savefig(".png")
-# end
 
 qrs_to_10(arr_qrs::BitVector, len::Int, sampler::EventSampler) = [any(arr_qrs[sampler((i - 1):i)]) for i in 1:len]
 
@@ -116,7 +121,7 @@ function get_p_least_squares(arr::Vector{Bool}, hr::Vector{Int64}, win::Int64, e
 
     if (length(arr_windows) < 30) || (length(empty_windows) < 30)
         # println("less than 30 windows")
-        return NaN
+        return NaN, [NaN], [NaN], arr_windows
     elseif length(arr_windows) < length(empty_windows)
         empty_windows = sample(empty_windows, length(arr_windows), replace=false)
     else
@@ -129,7 +134,7 @@ function get_p_least_squares(arr::Vector{Bool}, hr::Vector{Int64}, win::Int64, e
     # println(stderr, "coeffs_empty had zeros: ", count(==(0), coeffs_empty))
 
 
-    return tTestStudent(coeffs_arr, coeffs_empty), coeffs_arr, coeffs_empty
+    return tTestStudent(coeffs_arr, coeffs_empty), coeffs_arr, coeffs_empty, arr_windows
 end
 
 function check_windows(hr::Vector{Int64}, windows::Vector{Int64}, win::Int)

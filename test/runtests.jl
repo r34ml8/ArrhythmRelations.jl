@@ -4,7 +4,7 @@ using Test
 using .ArrhythmRelations.StatTests
 using TimeSamplings
 
-path = "C:\\Users\\fifteen\\.julia\\dev\\ArrhythmRelations\\test\\xmltest"
+path = pwd() * "\\test\\xmltest"
 # path = "C:\\Users\\rika\\Documents\\etu\\incart\\ArrhythmRelations.jl\\test\\xmltest"
 folders = ["ChildArithm.avt", "Ishem_Arithm.avt", "ReoBreath.avt", "Seminar_AD_FP.avt", "VMT_Arrh_101159.avt"]
 
